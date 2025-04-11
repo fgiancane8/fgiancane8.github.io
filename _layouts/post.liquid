@@ -1,0 +1,99 @@
+---
+layout: default
+---
+{% assign year = page.date | date: '%Y' %}
+{% assign tags = page.tags | join: '' %}
+{% assign categories = page.categories | join: '' %}
+{% assign url_beginning = page.url | slice: 0, 6 %}
+
+{% if page._styles %}
+  <!-- Page/Post style -->
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+{% endif %}
+
+<div class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+    <p class="post-meta">
+      Created on {{ page.date | date: '%d %B %Y' }}
+      {% if page.author %}by {{ page.author }}{% endif %}
+      {% if page.last_updated %}, last updated on {{ page.last_updated | date: '%d %B %Y' }}{% endif %}
+      {% if page.meta %}• {{ page.meta }}{% endif %}
+    </p>
+    <p class="post-tags">
+      {% if url_beginning == '/blog/' %}
+        <a href="{{ year | prepend: '/blog/' | relative_url }}"> <i class="fa-solid fa-calendar fa-sm"></i> {{ year }} </a>
+      {% else %}
+        <i class="fa-solid fa-calendar fa-sm"></i> {{ year }}
+      {% endif %}
+      {% if tags != '' %}
+        &nbsp; &middot; &nbsp;
+        {% for tag in page.tags %}
+          {% if url_beginning == '/blog/' %}
+            <a href="{{ tag | slugify | prepend: '/blog/tag/' | relative_url }}"> <i class="fa-solid fa-hashtag fa-sm"></i> {{ tag }}</a>
+          {% else %}
+            <i class="fa-solid fa-hashtag fa-sm"></i> {{ tag }}
+          {% endif %}
+          {% unless forloop.last %}
+            &nbsp;
+          {% endunless %}
+        {% endfor %}
+      {% endif %}
+
+      {% if categories != '' %}
+        &nbsp; &middot; &nbsp;
+        {% for category in page.categories %}
+          {% if url_beginning == '/blog/' %}
+            <a href="{{ category | slugify | prepend: '/blog/category/' | relative_url }}"> <i class="fa-solid fa-tag fa-sm"></i> {{ category -}}</a>
+          {% else %}
+            <i class="fa-solid fa-tag fa-sm"></i> {{ category }}
+          {% endif %}
+          {% unless forloop.last %}
+            &nbsp;
+          {% endunless %}
+        {% endfor %}
+      {% endif %}
+    </p>
+  </header>
+
+  <article class="post-content">
+    {% if page.toc and page.toc.beginning %}
+      <div id="table-of-contents">
+        {% toc %}
+      </div>
+      <hr>
+    {% endif %}
+    <div id="markdown-content">
+      {{ content }}
+    </div>
+  </article>
+
+  {% if page.citation %}
+    {% include citation.liquid %}
+  {% endif %}
+
+  {% if site.related_blog_posts and site.related_blog_posts.enabled %}
+    {% if page.related_posts == null or page.related_posts %}
+      {% include related_posts.liquid %}
+    {% endif %}
+  {% endif %}
+
+  {% if site.giscus and page.giscus_comments %}
+    {% include giscus.liquid %}
+  {% endif %}
+</div>
+<br>
+<div class="post-footer">
+  <p class="post-footer-text" xmlns:cc="http://creativecommons.org/ns#">
+    <hr>
+    Unless stated otherwise in the article's content, this work is licensed under
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">
+      CC BY-SA 4.0
+      <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt="">
+      <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt="">
+      <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt="">
+    </a>
+  </p>
+</div>
